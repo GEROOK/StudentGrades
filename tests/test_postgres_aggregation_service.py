@@ -17,12 +17,10 @@ class DummyConn:
 
     def __init__(self, fetch_records=None, total=0):
         self.fetch_records = fetch_records or []
-        # we allow total to be None to simulate no rows returned
         self.total = total
         self.last_query = None
 
     async def fetch(self, query: str):
-        # record last query so that a test can inspect it if desired
         self.last_query = query
         return self.fetch_records
 
@@ -33,17 +31,11 @@ class DummyConn:
         return {"total": self.total}
 
 
-# ---------------------------------------------------------------------------
-# helpers
-# ---------------------------------------------------------------------------
 
 def make_service(conn=None) -> PostgresAggregationService:
     return PostgresAggregationService(conn)
 
 
-# ---------------------------------------------------------------------------
-# tests for query building
-# ---------------------------------------------------------------------------
 
 def test_get_from_part_contains_grades_table():
     svc = make_service()
@@ -83,26 +75,17 @@ def test_format_query_includes_order_limit_offset_and_where():
 
     assert "ORDER BY group_number desc" in query
     assert "LIMIT 5 OFFSET 10" in query
-    # the WHERE clause produced by _resolve_grade_condition should appear
     assert "number_of_excellent <= 1" in query
 
 
 def test_format_query_without_grade_condition():
     svc = make_service()
     query = svc._format_query(limit=1, offset=2)
-    # there should only be FILTER WHERE clauses (one per grade value) and
-    # no extra standalone WHERE for a grade condition.  count occurrences of
-    # the pattern used in filters and ensure it matches the number of
-    # PointEnum entries.
     expected_filters = len(PointEnum)
     actual_filters = query.count("WHERE points =")
     assert actual_filters == expected_filters
     assert "LIMIT 1 OFFSET 2" in query
 
-
-# ---------------------------------------------------------------------------
-# tests for asynchronous behavior
-# ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_get_aggregate_students_by_grades_maps_records_and_counts():
@@ -138,7 +121,6 @@ async def test_count_total_students_returns_zero_when_none():
 
 @pytest.mark.asyncio
 async def test_get_aggregate_students_passes_query_to_connection():
-    # ensure that service uses the connection to run the SQL it builds
     records = []
     conn = DummyConn(fetch_records=records, total=0)
     svc = make_service(conn)

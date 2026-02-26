@@ -52,6 +52,3 @@ class Database:
                 pass
 
 
-# db = Database(
-#     dsn="postgresql://postgres:postgres@localhost:5432/studentgrades"
-# )

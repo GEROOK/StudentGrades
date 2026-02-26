@@ -1,5 +1,5 @@
 from src.infrastructure.repositories.student_grades.postgres import PosgresStudentGradesAsyncRepository
-from .database import ConnectionDep, get_connection
+from .database import  get_connection
 from fastapi import Depends
 from typing import Annotated
 

@@ -1,11 +1,10 @@
 from fastapi import Depends, UploadFile
 from src.infrastructure.services.importing_csv_service import CSVProvider
 from src.infrastructure.services.importing_csv_service import ImportingService
-from .repositories import StudentGradeRepositoryDep, get_student_grade_repository
+from .repositories import  get_student_grade_repository
 
 
 async def get_csv_provider(file: UploadFile) -> CSVProvider:
-    # Сохраняем загруженный файл во временное хранилище
     return CSVProvider(file.file)
 
 

@@ -17,6 +17,15 @@ class CSVProvider(AbstractProvider):
     def __init__(self, file_io: BinaryIO):
         self.file = io.TextIOWrapper(file_io, encoding="utf-8-sig")
         self.reader = csv.DictReader(self.file, delimiter=";")
+        self._validate_columns()
+
+    def _validate_columns(self):
+        required_columns = {"ФИО", "Номер группы", "Дата", "Оценка"}
+        if not self.reader.fieldnames:
+            raise ValueError("CSV file is empty")
+        missing_columns = required_columns - set(self.reader.fieldnames)
+        if missing_columns:
+            raise ValueError(f"Missing required columns: {missing_columns}")
 
     def __iter__(self):
         return self
@@ -26,14 +35,31 @@ class CSVProvider(AbstractProvider):
             row = next(self.reader)
             student_grade = StudentGrade(
                 _id=None,
-                student_full_name=row["ФИО"],
-                group_number=row["Номер группы"],
-                grade_date=datetime.datetime.strptime(row["Дата"], "%d.%m.%Y").date(),
-                points=PointEnum(int(row["Оценка"])),
+                student_full_name=self._validate_string(row["ФИО"]),
+                group_number=self._validate_string(row["Номер группы"]),
+                grade_date=self._validate_date(row["Дата"]),
+                points=self._validate_points(row["Оценка"]),
             )
             return student_grade
         except StopIteration:
             raise
+
+    def _validate_string(self, value: str) -> str:
+        if not value or not value.strip():
+            raise ValueError("String value cannot be empty")
+        return value.strip()
+
+    def _validate_date(self, value: str) -> datetime.date:
+        try:
+            return datetime.datetime.strptime(value, "%d.%m.%Y").date()
+        except ValueError:
+            raise ValueError(f"Invalid date format: {value}")
+
+    def _validate_points(self, value: str) -> PointEnum:
+        try:
+            return PointEnum(int(value))
+        except (ValueError, KeyError):
+            raise ValueError(f"Invalid grade value: {value}")
 
     def __del__(self):
         if not self.file.closed:

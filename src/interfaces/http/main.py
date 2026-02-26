@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 from src.interfaces.http.routes import router
 from src.interfaces.sql.db import Database
+import os
 
 
     
@@ -9,9 +10,11 @@ from src.interfaces.sql.db import Database
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db_instance = Database(
-        dsn="postgresql://postgres:postgres@localhost:5432/studentgrades"
+    database_url = os.getenv(
+        "DATABASE_URL",
+        "postgresql://postgres:postgres@localhost:5432/studentgrades"
     )
+    db_instance = Database(dsn=database_url)
     
     await db_instance.connect()
     await db_instance.create_tables()

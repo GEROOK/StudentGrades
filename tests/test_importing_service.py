@@ -11,16 +11,10 @@ class DummyRepo:
         self.saved = []
 
     async def save(self, student_grade):
-        # simply keep track of what was saved
         self.saved.append(student_grade)
 
 
-# ---------------------------------------------------------------------------
-# CSVProvider tests
-# ---------------------------------------------------------------------------
-
 def test_csvprovider_parses_rows_and_closes_file():
-    # prepare a small CSV with two records (second has same name)
     text = (
         "ФИО;Номер группы;Дата;Оценка\n"
         "Иван Иванов;101;01.01.2020;5\n"
@@ -41,14 +35,9 @@ def test_csvprovider_parses_rows_and_closes_file():
     with pytest.raises(StopIteration):
         next(provider)
 
-    # manually invoke destructor to close underlying file
     provider.__del__()
     assert provider.file.closed
 
-
-# ---------------------------------------------------------------------------
-# ImportingService tests
-# ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_importing_service_counts_correctly_and_saves_records():
@@ -69,6 +58,6 @@ async def test_importing_service_counts_correctly_and_saves_records():
     assert unique_students == 2
     assert len(repo.saved) == 3
 
-    # make sure that all saved objects have the expected attributes
     names = [r.student_full_name for r in repo.saved]
     assert names == ["А", "А", "Б"]
+

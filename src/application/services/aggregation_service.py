@@ -19,7 +19,7 @@ class SortingOptionEnum(enum.Enum):
 
 
 class SortingFieldEnum(enum.Enum):
-    STUDENT_FULL_NAME = "full_name"  # fix me  student_full_name
+    STUDENT_FULL_NAME = "full_name"
     GROUP_NUMBER = "group_number"
     GRADE_DATE = "grade_date"
 
