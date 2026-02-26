@@ -13,7 +13,6 @@ from src.infrastructure.services.postgres_aggregation_service import (
 
 
 class DummyConn:
-    """Minimal stand-in for asyncpg.Connection used in unit tests."""
 
     def __init__(self, fetch_records=None, total=0):
         self.fetch_records = fetch_records or []

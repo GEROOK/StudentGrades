@@ -43,8 +43,6 @@ class StudentGrade:
             raise ValueError("student_full_name cannot be empty")
         if not group_number or not group_number.strip():
             raise ValueError("group_number cannot be empty")
-        if grade_date > datetime.date.today():
-            raise ValueError("grade_date cannot be in the future")
 
     @property
     def is_persisted(self) -> bool:

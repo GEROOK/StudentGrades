@@ -37,10 +37,8 @@ def test_import_endpoint_invalid_data_returns_bad_request(client):
     bad_csv = "ФИО;Номер группы;Дата\nА;1;01.01.2020\n"
     response = client.post("/import", files={"file": ("bad.csv", make_csv_bytes(bad_csv), "text/csv")})
     assert response.status_code == 400
-    # detail should mention missing required columns
     assert "Missing required columns" in response.json().get("detail", "")
 
-    # invalid grade value
     bad_csv2 = (
         "ФИО;Номер группы;Дата;Оценка\n"
         "А;1;01.01.2020;invalid\n"
@@ -48,3 +46,5 @@ def test_import_endpoint_invalid_data_returns_bad_request(client):
     response2 = client.post("/import", files={"file": ("bad2.csv", make_csv_bytes(bad_csv2), "text/csv")})
     assert response2.status_code == 400
     assert "Invalid grade value" in response2.json().get("detail", "")
+
+

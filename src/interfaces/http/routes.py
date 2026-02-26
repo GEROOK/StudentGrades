@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, File, UploadFile, Query
 from src.interfaces.http.schemas import ImportGradesResponse, StudentSearchResponseItem
-from src.application.UserCases.Usercases import StudentSearchUseCase
+from src.application.Usercases.Usercases import StudentSearchUseCase
 from src.application.services.importing_service import AbstractImportingAsyncService
+from src.application.services.aggregation_service import AbstractAggregationAsyncService
 from src.infrastructure.services.postgres_aggregation_service import (
     PostgresAggregationService,
 )
@@ -15,13 +16,13 @@ from asyncpg import Connection
 router = APIRouter()
 
 
-def get_aggregation_service(connection: Connection = Depends(get_connection)):
+def get_aggregation_service(connection: Connection = Depends(get_connection)) -> AbstractAggregationAsyncService:
     return PostgresAggregationService(connection)
 
 
 def get_student_search_usecase(
-    aggregation_service: PostgresAggregationService = Depends(get_aggregation_service),
-):
+    aggregation_service: AbstractAggregationAsyncService = Depends(get_aggregation_service),
+) -> StudentSearchUseCase:
     return StudentSearchUseCase(aggregation_service)
 
 

@@ -1,12 +1,13 @@
-from src.infrastructure.services.postgres_aggregation_service import (
-    PostgresAggregationService,
+from src.application.services.aggregation_service import (
+    AbstractAggregationAsyncService,
+    GradeCondition,
+    OperatorEnum,
 )
-from src.application.services.aggregation_service import GradeCondition, OperatorEnum
 from src.domain.entities import PointEnum
 
 
 class StudentSearchUseCase:
-    def __init__(self, aggregation_service: PostgresAggregationService) -> None:
+    def __init__(self, aggregation_service: AbstractAggregationAsyncService) -> None:
         self.aggregation_service = aggregation_service
 
     async def search_students_with_less_than_5_twos(self, limit: int, offset: int):
