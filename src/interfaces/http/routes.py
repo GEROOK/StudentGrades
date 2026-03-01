@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, File, UploadFile, Query
 from src.interfaces.http.schemas import ImportGradesResponse, StudentSearchResponseItem
-from src.application.Usercases.Usercases import StudentSearchUseCase
+from src.application.UserCases.Usercases import StudentSearchUseCase
 from src.application.services.importing_service import AbstractImportingAsyncService
 from src.application.services.aggregation_service import AbstractAggregationAsyncService
 from src.infrastructure.services.postgres_aggregation_service import (

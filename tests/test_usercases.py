@@ -1,6 +1,6 @@
 import pytest
 
-from src.application.Usercases.Usercases import StudentSearchUseCase
+from src.application.UserCases.Usercases import StudentSearchUseCase
 from src.application.services.aggregation_service import GradeCondition
 from src.domain.entities import PointEnum
 from src.application.services.aggregation_service import OperatorEnum
